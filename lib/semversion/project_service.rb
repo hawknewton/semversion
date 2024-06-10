@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Semversion
   class ProjectService
     def update_version(version)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Semversion::Semver do
   describe '::semver?' do
     subject { Semversion::Semver.semver?(tag) }
@@ -54,20 +56,20 @@ RSpec.describe Semversion::Semver do
 
       context 'the same lower minor' do
         context 'and a lower patch' do
-        let(:other_semver) { Semversion::Semver.new('2.2.1') }
+          let(:other_semver) { Semversion::Semver.new('2.2.1') }
 
-        it { is_expected.to eq 1 }
+          it { is_expected.to eq 1 }
         end
 
         context 'and a higher patch' do
-        let(:other_semver) { Semversion::Semver.new('2.2.3') }
+          let(:other_semver) { Semversion::Semver.new('2.2.3') }
 
-        it { is_expected.to eq(-1) }
+          it { is_expected.to eq(-1) }
         end
 
         context 'and a the same patch' do
-        let(:other_semver) { Semversion::Semver.new('2.2.2') }
-        it { is_expected.to eq 0 }
+          let(:other_semver) { Semversion::Semver.new('2.2.2') }
+          it { is_expected.to eq 0 }
         end
       end
     end

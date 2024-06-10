@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'tmpdir'
 
 def fixture_repo(&block)
@@ -5,7 +7,7 @@ def fixture_repo(&block)
   Dir.chdir(tmpdir) do
     `git init`
     `git commit --allow-empty -m 'initial commit'`
-    block.call if block
+    block&.call
   end
 
   tmpdir

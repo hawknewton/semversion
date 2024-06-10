@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Semversion::GitService do
   around do |example|
     fixture_repo do
