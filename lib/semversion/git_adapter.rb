@@ -61,6 +61,5 @@ module Semversion
       cmd = TTY::Command.new(printer: debug? ? :pretty : :null)
       cmd.run(command).to_a.join("\n")
     end
-
   end
 end

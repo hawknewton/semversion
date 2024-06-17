@@ -4,7 +4,7 @@ require 'json'
 
 module Semversion
   class ProjectService
-    PROJECT_TYPES = %w[npm gem naked]
+    PROJECT_TYPES = %w[npm gem naked].freeze
 
     def update_version(version)
       send(['update', project_type, 'version'].join('_'), version)

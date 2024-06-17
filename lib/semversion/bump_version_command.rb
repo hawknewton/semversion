@@ -10,9 +10,9 @@ module Semversion
     end
 
     def exec
+      Logger.info("Bumping version to #{next_version}")
       @git_adapter.pull_notes
       files = @project_service.update_version(next_version)
-      Logger.info("Bumping version to #{next_version}")
       @git_adapter.commit("Bump version to #{next_version}", files)
       @git_adapter.create_tag(next_version, "Version #{next_version} tagged by Semversion")
       @git_adapter.push
