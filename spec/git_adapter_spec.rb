@@ -41,7 +41,7 @@ RSpec.describe Semversion::GitAdapter do
         it { is_expected.to be_empty }
       end
 
-      context 'Give a note for the tag' do
+      context 'Given a note for the tag' do
         let(:tag) { '1.0.0' }
 
         before do
@@ -51,6 +51,20 @@ RSpec.describe Semversion::GitAdapter do
 
         it 'returns the note' do
           expect(subject).to match_array ['Test note']
+        end
+      end
+
+      context 'Given two notes for the tag' do
+        let(:tag) { '1.0.0' }
+
+        before do
+          `git tag 1.0.0`
+          `git notes append -m 'Test note 1'`
+          `git notes append -m 'Test note 2'`
+        end
+
+        it 'returns the note' do
+          expect(subject).to match_array ['Test note 1', 'Test note 2']
         end
       end
     end
@@ -106,6 +120,20 @@ RSpec.describe Semversion::GitAdapter do
         note = `git notes show`.strip
 
         expect(note).to eq 'this is a test note'
+      end
+
+      context 'when a note already exists' do
+        before do
+          `git notes add -m 'this is the first note'`
+        end
+
+        it 'adds a second note' do
+          create_note
+
+          note = `git notes show`.strip
+
+          expect(note).to eq "this is the first note\n\nthis is a test note"
+        end
       end
     end
   end

@@ -10,7 +10,7 @@ module Semversion
     end
 
     def create_note(note)
-      run("git notes add -m '#{note}'")
+      run("git notes append -m '#{note}'")
     end
 
     def current_branch
@@ -29,7 +29,7 @@ module Semversion
       return [] unless tags.include?(tag)
 
       ref = run("git rev-list -n 1 #{tag}").strip
-      run("git notes show #{ref}").split("\n")
+      run("git notes show #{ref}").split("\n").reject(&:empty?)
     rescue TTY::Command::ExitError => e
       return [] if e.message.include?('no note found')
 
