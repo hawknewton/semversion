@@ -15,6 +15,8 @@ module Semversion
       def info(str)
         return unless @logger
 
+        return if str.nil? || str.empty?
+
         @logger.puts(str)
       end
     end
