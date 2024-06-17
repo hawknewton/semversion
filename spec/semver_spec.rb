@@ -74,4 +74,22 @@ RSpec.describe Semversion::Semver do
       end
     end
   end
+
+  describe '#bump_patch' do
+    it 'bumps the patch' do
+      semver = Semversion::Semver.new('1.1.1')
+      semver.bump_patch
+
+      expect(semver.to_s).to eq '1.1.2'
+    end
+  end
+
+  describe '#bump_minor' do
+    it 'bumps the minor' do
+      semver = Semversion::Semver.new('1.1.1')
+      semver.bump_minor
+
+      expect(semver.to_s).to eq '1.2.0'
+    end
+  end
 end

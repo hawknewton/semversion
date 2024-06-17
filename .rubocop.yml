@@ -1,5 +1,7 @@
 AllCops:
   TargetRubyVersion: 2.6
+  NewCops: enable
+  SuggestExtensions: false
 
 Style/StringLiteralsInInterpolation:
   Enabled: true
@@ -10,3 +12,7 @@ Style/Documentation:
 
 Layout/LineLength:
   Max: 120
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'

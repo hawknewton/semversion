@@ -13,8 +13,17 @@ module Semversion
       true
     end
 
+    def bump_patch
+      @patch += 1
+    end
+
+    def bump_minor
+      @minor += 1
+      @patch = 0
+    end
+
     def initialize(version)
-      (@major, @minor, @patch) = version.split('.')
+      (@major, @minor, @patch) = version.split('.').map(&:to_i)
     end
 
     def sort(other)
@@ -28,6 +37,10 @@ module Semversion
       return -1 if other.patch > @patch
 
       0
+    end
+
+    def to_s
+      [@major, @minor, @patch].join('.')
     end
   end
 end

@@ -7,6 +7,10 @@ module Semversion
       `git commit -m "#{message}"`
     end
 
+    def create_note(note)
+      `git notes add -m '#{note}'`
+    end
+
     def current_branch
       `git rev-parse --abbrev-ref HEAD`.strip
     end
@@ -19,6 +23,19 @@ module Semversion
       return [] if !tags.include?(tag) || `git notes list #{tag} 2>/dev/null`.empty?
 
       `git notes show #{tag}`.split("\n")
+    end
+
+    def push
+      `git push --follow-tags origin #{current_branch} 2> /dev/null`
+    end
+
+    def push_notes
+      `git push origin 'refs/notes/*' 2> /dev/null`
+    end
+
+    def shallow_clone(url, ref)
+      `git clone --depth 1 --branch #{ref} #{url} . 2> /dev/null`
+      `git fetch origin 'refs/notes/*:refs/notes/*' 2> /dev/null`
     end
 
     def tags

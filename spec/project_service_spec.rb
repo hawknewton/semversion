@@ -11,7 +11,51 @@ RSpec.describe Semversion::ProjectService do
     end
   end
 
-  describe 'Bumping project version' do
+  describe 'Getting the current version' do
+    subject(:version) { described_class.new.version }
+
+    context 'Given a npm project' do
+      before do
+        project = { name: 'test-project', version: '1.0.0' }
+        File.write('project.json', JSON.dump(project))
+        File.write('project-lock.json', JSON.dump(project))
+      end
+
+      it 'gets the project version' do
+        expect(version).to eq '1.0.0'
+      end
+    end
+
+    context 'Given a ruby gem project' do
+      before do
+        Dir.mkdir('lib')
+        Dir.mkdir('lib/project')
+
+        File.write('lib/project/version.rb', "module Project\n  VERSION = \"1.0.0\"\nend")
+      end
+
+      it 'gets the project version' do
+        expect(version).to eq '1.0.0'
+      end
+    end
+
+    context 'Given a ruby app' do
+      before do
+        File.write('VERSION', '1.0.0')
+      end
+      it 'gets the project version' do
+        expect(version).to eq '1.0.0'
+      end
+    end
+
+    context 'Given no recognizable files' do
+      it 'raises an error' do
+        expect { version }.to raise_error(/unknown project format/)
+      end
+    end
+  end
+
+  describe 'Updating project version' do
     subject(:update_version) do
       instance.update_version('2.0.0')
     end
@@ -42,6 +86,8 @@ RSpec.describe Semversion::ProjectService do
           version: '2.0.0'
         )
       end
+
+      it { is_expected.to match_array(%w[project.json project-lock.json]) }
     end
 
     context 'Given a ruby gem project' do
@@ -67,6 +113,8 @@ RSpec.describe Semversion::ProjectService do
         update_version
         expect(instance).to have_received(:system).with('bundle install')
       end
+
+      it { is_expected.to match_array(%w[lib/project/version.rb]) }
     end
 
     context 'Given a ruby app' do
@@ -79,6 +127,8 @@ RSpec.describe Semversion::ProjectService do
 
         expect(File.read('VERSION').strip).to eq '2.0.0'
       end
+
+      it { is_expected.to match_array(%w[VERSION]) }
     end
 
     context 'Given no recognizable files' do

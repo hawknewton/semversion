@@ -8,11 +8,11 @@ RSpec.describe Semversion::GitService do
   end
 
   describe 'Getting the latest tag' do
-    subject { described_class.new.latest_tag }
+    subject(:latest_tag) { described_class.new.latest_tag }
 
     context 'Given a repo with no tags' do
       it 'returns null' do
-        expect(subject).to be_nil
+        expect(latest_tag).to be_nil
       end
     end
 
@@ -22,7 +22,7 @@ RSpec.describe Semversion::GitService do
         `git commit --allow-empty -m 'another commit'`
         `git tag 1.0.0`
 
-        expect(subject).to eq('1.0.0')
+        expect(latest_tag).to eq('1.0.0')
       end
     end
 
@@ -32,7 +32,7 @@ RSpec.describe Semversion::GitService do
         `git commit --allow-empty -m 'another commit'`
         `git tag 0.1.1`
 
-        expect(subject).to eq('1.0.0')
+        expect(latest_tag).to eq('1.0.0')
       end
     end
 
@@ -43,12 +43,8 @@ RSpec.describe Semversion::GitService do
         `git commit --allow-empty -m 'another commit'`
         `git tag 0.1.1`
 
-        expect(subject).to eq('1.0.0')
+        expect(latest_tag).to eq('1.0.0')
       end
     end
-  end
-
-  describe 'Tagging a version' do
-    it 'tags the version'
   end
 end
