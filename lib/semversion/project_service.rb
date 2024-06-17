@@ -4,29 +4,19 @@ require 'json'
 
 module Semversion
   class ProjectService
+    PROJECT_TYPES = %w[npm gem naked]
+
     def update_version(version)
-      return update_npm_version(version) if npm_project?
-
-      return update_gem_version(version) if ruby_gem_project?
-
-      return update_app_version(version) if naked_version_project?
-
-      unknown_project
+      send(['update', project_type, 'version'].join('_'), version)
     end
 
     def version
-      return JSON.parse(File.read('package.json'))['version'] if npm_project?
-
-      return version_rb.match(/VERSION = "(\d+\.\d+\.\d+)"/)[1] if ruby_gem_project?
-
-      return File.read('VERSION').strip if naked_version_project?
-
-      unknown_project
+      send([project_type, 'version'].join('_'))
     end
 
     private
 
-    def update_app_version(version)
+    def update_naked_version(version)
       File.write('VERSION', version)
       %w[VERSION]
     end
@@ -36,12 +26,12 @@ module Semversion
         /VERSION = "\d+\.\d+\.\d+"/, "VERSION = \"#{version}\""
       )
 
-      raise "Could not update version in #{ruby_gem_version_file}" unless
+      raise "Could not update version in #{gem_version_file}" unless
         new_version_rb.include?(version)
 
-      File.write(ruby_gem_version_file, new_version_rb)
+      File.write(gem_version_file, new_version_rb)
       system('bundle install')
-      [ruby_gem_version_file]
+      [gem_version_file]
     end
 
     def update_npm_version(version)
@@ -58,24 +48,40 @@ module Semversion
       File.write(file_name, JSON.pretty_generate(project))
     end
 
-    def ruby_gem_version_file
-      @ruby_gem_version_file ||= Dir.glob('lib/*/version.rb').first
+    def gem_version_file
+      @gem_version_file ||= Dir.glob('lib/*/version.rb').first
+    end
+
+    def gem_version
+      version_rb.match(/VERSION = "(\d+\.\d+\.\d+)"/)[1]
     end
 
     def npm_project?
       File.exist?('package.json')
     end
 
-    def ruby_gem_project?
-      !ruby_gem_version_file.nil?
+    def npm_version
+      JSON.parse(File.read('package.json'))['version']
     end
 
-    def naked_version_project?
+    def gem_project?
+      !gem_version_file.nil?
+    end
+
+    def naked_project?
       File.exist?('VERSION')
     end
 
+    def naked_version
+      File.read('VERSION').strip
+    end
+
+    def project_type
+      PROJECT_TYPES.detect { |t| send([t, 'project?'].join('_')) } || unknown_project
+    end
+
     def version_rb
-      @version_rb ||= File.read(ruby_gem_version_file)
+      @version_rb ||= File.read(gem_version_file)
     end
 
     def unknown_project
