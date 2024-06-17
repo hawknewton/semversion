@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'json'
+
 module Semversion
   class ProjectService
     def update_version(version)
@@ -13,7 +15,7 @@ module Semversion
     end
 
     def version
-      return JSON.parse(File.read('project.json'))['version'] if npm_project?
+      return JSON.parse(File.read('package.json'))['version'] if npm_project?
 
       return version_rb.match(/VERSION = "(\d+\.\d+\.\d+)"/)[1] if ruby_gem_project?
 
@@ -43,7 +45,7 @@ module Semversion
     end
 
     def update_npm_version(version)
-      files = ['project.json', 'project-lock.json']
+      files = ['package.json', 'package-lock.json']
       files.each do |file|
         update_npm_project_file(file, version)
       end
@@ -61,7 +63,7 @@ module Semversion
     end
 
     def npm_project?
-      File.exist?('project.json')
+      File.exist?('package.json')
     end
 
     def ruby_gem_project?

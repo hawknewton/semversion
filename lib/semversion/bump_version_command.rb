@@ -2,7 +2,7 @@
 
 module Semversion
   class BumpVersionCommand
-    def initialize(git_adapter:, project_service:)
+    def initialize(git_adapter: GitAdapter.new, project_service: ProjectService.new)
       @git_adapter = git_adapter
       @project_service = project_service
     end

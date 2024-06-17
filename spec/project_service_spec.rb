@@ -16,9 +16,9 @@ RSpec.describe Semversion::ProjectService do
 
     context 'Given a npm project' do
       before do
-        project = { name: 'test-project', version: '1.0.0' }
-        File.write('project.json', JSON.dump(project))
-        File.write('project-lock.json', JSON.dump(project))
+        package = { name: 'test-project', version: '1.0.0' }
+        File.write('package.json', JSON.dump(package))
+        File.write('package-lock.json', JSON.dump(package))
       end
 
       it 'gets the project version' do
@@ -65,13 +65,13 @@ RSpec.describe Semversion::ProjectService do
     context 'Given a npm project' do
       before do
         project = { name: 'test-project', version: '1.0.0' }
-        File.write('project.json', JSON.dump(project))
-        File.write('project-lock.json', JSON.dump(project))
+        File.write('package.json', JSON.dump(project))
+        File.write('package-lock.json', JSON.dump(project))
       end
 
       it 'updates the version in package.json' do
         update_version
-        result = JSON.parse(File.read('project.json'), symbolize_names: true)
+        result = JSON.parse(File.read('package.json'), symbolize_names: true)
         expect(result).to include(
           name: 'test-project',
           version: '2.0.0'
@@ -80,14 +80,14 @@ RSpec.describe Semversion::ProjectService do
 
       it 'updates the version in package-lock.json' do
         update_version
-        result = JSON.parse(File.read('project-lock.json'), symbolize_names: true)
+        result = JSON.parse(File.read('package-lock.json'), symbolize_names: true)
         expect(result).to include(
           name: 'test-project',
           version: '2.0.0'
         )
       end
 
-      it { is_expected.to match_array(%w[project.json project-lock.json]) }
+      it { is_expected.to match_array(%w[package.json package-lock.json]) }
     end
 
     context 'Given a ruby gem project' do
