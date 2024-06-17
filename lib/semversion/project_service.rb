@@ -9,7 +9,7 @@ module Semversion
 
       return update_gem_version(version) if ruby_gem_project?
 
-      return update_app_version(version) if ruby_app_project?
+      return update_app_version(version) if naked_version_project?
 
       unknown_project
     end
@@ -19,7 +19,7 @@ module Semversion
 
       return version_rb.match(/VERSION = "(\d+\.\d+\.\d+)"/)[1] if ruby_gem_project?
 
-      return File.read('VERSION').strip if ruby_app_project?
+      return File.read('VERSION').strip if naked_version_project?
 
       unknown_project
     end
@@ -70,7 +70,7 @@ module Semversion
       !ruby_gem_version_file.nil?
     end
 
-    def ruby_app_project?
+    def naked_version_project?
       File.exist?('VERSION')
     end
 
