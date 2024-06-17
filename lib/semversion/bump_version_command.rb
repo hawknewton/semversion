@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Semversion
-  class BuildCandidateCommand
+  class BumpVersionCommand
     def initialize(git_adapter:, project_service:)
       @git_adapter = git_adapter
       @project_service = project_service

@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+
+require 'semversion'
+require 'thor'
+
+class App < Thor
+  package_name 'semversion'
+
+  desc 'bump', 'Bump the version'
+  def bump
+    Semversion::BumpVersionCommand.new.exec
+  end
+
+  desc 'release', 'Mark current version released'
+  def release
+    Semversion::ReleaseCommand.new.exec
+  end
+end
+
+App.start

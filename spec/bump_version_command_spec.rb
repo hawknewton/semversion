@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Semversion::BuildCandidateCommand do
+RSpec.describe Semversion::BumpVersionCommand do
   let(:mock_git_adapter) { instance_double('Semversion::GitAdapter') }
   let(:mock_project_service) { instance_double('Semversion::ProjectService') }
 
