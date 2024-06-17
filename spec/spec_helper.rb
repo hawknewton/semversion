@@ -3,6 +3,8 @@
 require 'semversion'
 require 'pry'
 
+Semversion::Logger.logger = nil
+
 Dir[File.join(__dir__, 'support', '*.rb')].sort.each do |file|
   require file
 end

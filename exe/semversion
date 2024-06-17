@@ -11,9 +11,13 @@ class App < Thor
     Semversion::BumpVersionCommand.new.exec
   end
 
-  desc 'release', 'Mark current version released'
-  def release
-    Semversion::ReleaseCommand.new.exec
+  desc 'release ORIGN VERSION?', 'Mark current version released'
+  def release(origin, version)
+    Semversion::ReleaseCommand.new(origin: origin, version: version).exec
+  end
+
+  def self.exit_on_failure?
+    true
   end
 end
 

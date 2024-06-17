@@ -9,6 +9,7 @@ RSpec.describe Semversion::BumpVersionCommand do
 
     context 'when the current branch is main' do
       before do
+        allow(mock_git_adapter).to receive(:pull_notes)
         allow(mock_git_adapter).to receive(:current_branch).and_return 'main'
         allow(mock_git_adapter).to receive(:create_tag)
         allow(mock_git_adapter).to receive(:commit)
@@ -76,6 +77,7 @@ RSpec.describe Semversion::BumpVersionCommand do
           .to receive(:notes)
           .with('1.2.3')
           .and_return(['version 1.2.3 deployed to production at 2021-08-01 12:00:00'])
+        allow(mock_git_adapter).to receive(:pull_notes)
         allow(mock_git_adapter).to receive(:current_branch).and_return 'hotfix-1.2'
         allow(mock_git_adapter).to receive(:create_tag)
         allow(mock_git_adapter).to receive(:commit)
@@ -93,6 +95,7 @@ RSpec.describe Semversion::BumpVersionCommand do
 
     context 'when the current branch is none neither main nor hotfix' do
       before do
+        allow(mock_git_adapter).to receive(:pull_notes)
         allow(mock_project_service).to receive(:version).and_return '1.2.3'
         allow(mock_git_adapter).to receive(:current_branch).and_return 'not-a-real-branch'
       end

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'pry'
+
 module Semversion
   class BumpVersionCommand
     def initialize(git_adapter: GitAdapter.new, project_service: ProjectService.new)
@@ -8,7 +10,9 @@ module Semversion
     end
 
     def exec
+      @git_adapter.pull_notes
       files = @project_service.update_version(next_version)
+      Logger.info("Bumping version to #{next_version}")
       @git_adapter.commit("Bump version to #{next_version}", files)
       @git_adapter.create_tag(next_version, "Version #{next_version} tagged by Semversion")
       @git_adapter.push
@@ -31,9 +35,11 @@ module Semversion
     end
 
     def next_version
+      return @next_version if @next_version
+
       semver = Semver.new(version)
       semver.public_send(!hotfix_branch? && last_version_deployed_to_production? ? :bump_minor : :bump_patch)
-      semver.to_s
+      @next_version = semver.to_s
     end
 
     def version

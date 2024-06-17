@@ -1,45 +1,66 @@
 # frozen_string_literal: true
 
+require 'tty-command'
+
 module Semversion
   class GitAdapter
     def commit(message, files)
       files.each { |f| `git add #{f}` }
-      `git commit -m "#{message}"`
+      run("git commit -m '#{message}'")
     end
 
     def create_note(note)
-      `git notes add -m '#{note}'`
+      run("git notes add -m '#{note}'")
     end
 
     def current_branch
-      `git rev-parse --abbrev-ref HEAD`.strip
+      run('git rev-parse --abbrev-ref HEAD').strip
     end
 
     def create_tag(tag, message)
-      `git tag -a #{tag} -m '#{message}'`
+      run("git tag -a #{tag} -m '#{message}'")
+    end
+
+    def debug?
+      ENV.fetch('DEBUG', 'false') == 'true'
     end
 
     def notes(tag)
-      return [] if !tags.include?(tag) || `git notes list #{tag} 2>/dev/null`.empty?
+      return [] unless tags.include?(tag)
 
-      `git notes show #{tag}`.split("\n")
+      ref = run("git rev-list -n 1 #{tag}").strip
+      run("git notes show #{ref}").split("\n")
+    rescue TTY::Command::ExitError => e
+      return [] if e.message.include?('no note found')
+
+      raise
     end
 
     def push
-      `git push --follow-tags origin #{current_branch} 2> /dev/null`
+      run("git push --follow-tags origin #{current_branch}")
+    end
+
+    def pull_notes
+      run("git fetch origin 'refs/notes/*:refs/notes/*'")
     end
 
     def push_notes
-      `git push origin 'refs/notes/*' 2> /dev/null`
+      run("git push origin 'refs/notes/*'")
     end
 
     def shallow_clone(url, ref)
-      `git clone --depth 1 --branch #{ref} #{url} . 2> /dev/null`
-      `git fetch origin 'refs/notes/*:refs/notes/*' 2> /dev/null`
+      run("git clone --depth 1 --branch #{ref} #{url} .")
+      run("git fetch origin 'refs/notes/*:refs/notes/*'")
     end
 
     def tags
-      `git tag`.split("\n")
+      run('git tag').split("\n")
     end
+
+    def run(command)
+      cmd = TTY::Command.new(printer: debug? ? :pretty : :null)
+      cmd.run(command).to_a.join("\n")
+    end
+
   end
 end

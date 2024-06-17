@@ -14,6 +14,8 @@ module Semversion
         @git_adapter.create_note(notes)
         @git_adapter.push_notes
       end
+
+      Logger.info("Version #{@version} released")
     end
 
     private
