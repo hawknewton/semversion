@@ -20,11 +20,11 @@ Semversion maintains semversion-compatible versions for your application using t
 
 ## Usage
 
-Currently, the [ProjectAdapter](lib/semversion/project_service.rb) supports ruby and npm projects, it should be easy to extend as needed.
+Currently, the [ProjectService](lib/semversion/project_service.rb) supports ruby and npm projects, it should be easy to extend as needed.
 
 There are two main commands.  Each must be run with an environemnt such that `git push` has the permissions necessary to succeed.
 
-* `semversion bumo` bumps the current version of the project.  This command should be called from the root of your project just before you build a release candidate.
+* `semversion bump` bumps the current version of the project.  This command should be called from the root of your project just before you build a release candidate.
 * `semversion release <origin repo> <version>` marks the version as having gone to production.  You do not need to run this from a checked-out repo.
 
 Set the environment varaible `DEBUG=true` to see what's happening under the hood.
