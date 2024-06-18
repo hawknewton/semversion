@@ -29,8 +29,6 @@ module Semversion
 
     def last_version_deployed_to_production?
       notes = @git_adapter.notes(version)
-      return false unless notes.any?
-
       notes.any? { |note| note.start_with?("version #{version} deployed to production") }
     end
 
