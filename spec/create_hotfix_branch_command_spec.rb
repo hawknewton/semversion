@@ -3,8 +3,9 @@ RSpec.describe Semversion::CreateHotfixBranchCommand do
 
   describe '#exec' do
     subject(:exec) do
-      described_class.new(git_adapter: mock_git_adapter, major_minor: '1.2').exec
+      described_class.new(git_adapter: mock_git_adapter, major_minor: major_minor).exec
     end
+    let(:major_minor) { '1.2' }
 
     context 'when the current branch is main' do
       before do
@@ -23,6 +24,13 @@ RSpec.describe Semversion::CreateHotfixBranchCommand do
         exec
 
         expect(mock_git_adapter).to have_received(:push)
+      end
+    end
+
+    context 'when the major.minor is not numeric' do
+      let(:major_minor) { '1.a' }
+      it 'raises an error' do
+        expect { exec }.to raise_error(/major.minor must be numeric/)
       end
     end
   end

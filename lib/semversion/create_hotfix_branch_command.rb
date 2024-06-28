@@ -6,6 +6,8 @@ module Semversion
     end
 
     def exec
+      raise 'major.minor must be numeric' if @major_minor !~ /^\d+\.\d+$/ 
+
       @git_adapter.create_branch(branch, latest_patch)
       @git_adapter.push
 
