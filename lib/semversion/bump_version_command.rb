@@ -11,7 +11,6 @@ module Semversion
 
     def exec
       Logger.info("Bumping version to #{next_version}")
-      @git_adapter.pull_notes
       files = @project_service.update_version(next_version)
       @git_adapter.commit("Bump version to #{next_version}", files)
       @git_adapter.create_tag(next_version, "Version #{next_version} tagged by Semversion")
@@ -28,6 +27,7 @@ module Semversion
     end
 
     def last_version_deployed_to_production?
+      @git_adapter.pull_notes
       notes = @git_adapter.notes(version)
       notes.any? { |note| note.start_with?("version #{version} deployed to production") }
     end
