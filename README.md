@@ -16,10 +16,12 @@ If your master branch has moved on and you need to create a patch for a previous
 
 For example, consider the following tags
 
+```
 1.0.0
 1.0.1
 1.1.0
 1.1.1 -> `master`
+```
 
 And let's say you've got a bug in 1.0.1 and you want to build 1.0.2, Running `sumversion create-hotfix-branch 1.0` will create a hotfix branch called `hotfix-1.0` based on the latest 1.0 tag, in this case 1.0.1.
 
