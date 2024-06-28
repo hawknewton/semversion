@@ -10,7 +10,18 @@ Next, you build your software as usual, using the version denoted in your repo a
 
 After you push to production, call `semversion release`.  This command annotates your git repo (via git notes) denoting the passed version has gone to production.
 
-A subsaquent call to `subversion bump` will reset the patch and bump the minor *UNLESS* you run it on a hotfix branch (a branch named hotfix-major.minor).
+A subsaquent call to `semversion bump` will reset the patch and bump the minor *UNLESS* you run it on a hotfix branch (a branch named hotfix-major.minor).
+
+If your master branch has moved on and you need to create a patch for a previous version use `semversion create-hotfix-branch MAJOR.MINOR` to create a hotfix branch based on the most recent MAJOR.MINOR.
+
+For example, consider the following tags
+
+1.0.0
+1.0.1
+1.1.0
+1.1.1 -> `master`
+
+And let's say you've got a bug in 1.0.1 and you want to build 1.0.2, Running `sumversion create-hotfix-branch 1.0` will create a hotfix branch called `hotfix-1.0` based on the latest 1.0 tag, in this case 1.0.1.
 
 Semversion maintains semversion-compatible versions for your application using the following convention:
 
