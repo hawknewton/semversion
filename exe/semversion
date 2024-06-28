@@ -17,6 +17,11 @@ class App < Thor
     Semversion::ReleaseCommand.new(origin: origin, version: version).exec
   end
 
+  desc 'create-hotfix-branch MAJOR.MINOR', 'Create a hotfix branch'
+  def create_hotfix_branch(major_minor)
+    Semversion::CreateHotfixBranchCommand.new(major_minor: major_minor).exec
+  end
+
   def self.exit_on_failure?
     true
   end

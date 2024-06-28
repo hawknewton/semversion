@@ -47,4 +47,44 @@ RSpec.describe Semversion::GitService do
       end
     end
   end
+
+  describe 'Getting the latest patch for a given major.minor' do
+    subject(:latest_patch) { described_class.new.latest_patch(major_minor) }
+    let(:major_minor) { '1.2' }
+
+    context 'when no tags exist' do
+      it 'raises an error' do
+        expect { latest_patch }.to raise_error(Semversion::NoVersionError)
+      end
+    end
+
+    context 'when tags exist but don\'t match the major.minor' do
+      before do
+        `git tag 1.0.0`
+        `git tag 1.0.1`
+      end
+
+      it 'raises an error' do
+        expect { latest_patch }.to raise_error(Semversion::NoVersionError)
+      end
+    end
+
+    context 'given tags 1.2.0 and 1.2.1' do
+      before do
+        `git tag 1.2.0`
+        `git tag 1.2.1`
+      end
+
+      it { is_expected.to eq('1.2.1') }
+    end
+
+    context 'given tags 1.2.1 and 1.2.0' do
+      before do
+        `git tag 1.2.1`
+        `git tag 1.2.0`
+      end
+
+      it { is_expected.to eq('1.2.1') }
+    end
+  end
 end

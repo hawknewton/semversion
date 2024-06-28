@@ -9,6 +9,10 @@ module Semversion
       run("git commit -m '#{message}'")
     end
 
+    def create_branch(branch, tag)
+      run("git checkout -b #{branch} #{tag}")
+    end
+
     def create_note(note)
       run("git notes append -m '#{note}'")
     end

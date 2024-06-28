@@ -26,5 +26,6 @@ There are two main commands.  Each must be run with an environemnt such that `gi
 
 * `semversion bump` bumps the current version of the project.  This command should be called from the root of your project just before you build a release candidate.
 * `semversion release <origin repo> <version>` marks the version as having gone to production.  You do not need to run this from a checked-out repo.
+* `semversion create-hotfix-branch <major.minor>` creates and pushes a hotfix branch called hotfix-major.minor based on the latest tag that matches the major and minor version your passed
 
 Set the environment varaible `DEBUG=true` to see what's happening under the hood.

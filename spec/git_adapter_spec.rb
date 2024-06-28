@@ -8,6 +8,30 @@ RSpec.describe Semversion::GitAdapter do
       end
     end
 
+    describe 'creating a branch' do
+      subject(:create_branch) { described_class.new.create_branch('test-branch', '1.0.0') }
+
+      before do
+        `git tag 1.0.0`
+        `git commit -m 'another commit' --allow-empty`
+      end
+
+      it 'creates the branch' do
+        create_branch
+
+        expect(`git rev-parse --abbrev-ref HEAD`.strip).to eq 'test-branch'
+      end
+
+      it 'starts the branch at the given tag' do
+        create_branch
+
+        head = `git rev-parse HEAD`.strip
+        tag = `git rev-parse 1.0.0`.strip
+
+        expect(head).to eq tag
+      end
+    end
+
     describe 'Getting tags' do
       subject { Semversion::GitAdapter.new.tags }
 
